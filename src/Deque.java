@@ -7,19 +7,20 @@ public class Deque<Item> implements Iterable<Item> {
   private int count = 0;
   
   private class Node {
-    Item item;
-    Node next;
-    Node previous;
+    private Item item;
+    private Node next;
+    private Node previous;
   }
   
-  public class ListIterator implements Iterator<Item> {
+  private class ListIterator implements Iterator<Item> {
     private Node current = first;
     
-    public boolean hasNext() { return current != null; }
+    public boolean hasNext() { 
+      return current != null; 
+    }
     
     public Item next() {
-      if (current == null)
-        throw new NoSuchElementException();
+      if (current == null) throw new NoSuchElementException();
       else {
         Item item = current.item;
         current = current.next;
@@ -46,9 +47,7 @@ public class Deque<Item> implements Iterable<Item> {
   }
   
   public void addFirst(Item item) {
-    if (item == null) {
-      throw new NullPointerException();
-    }
+    if (item == null) throw new NullPointerException();
     else {
       if (isEmpty()) {
         this.first = new Node();
@@ -78,9 +77,7 @@ public class Deque<Item> implements Iterable<Item> {
   }
   
   public void addLast(Item item) {
-    if (item == null) {
-      throw new NullPointerException();
-    }
+    if (item == null) throw new NullPointerException();
     else {
       if (isEmpty()) {
         this.first = new Node();
@@ -107,12 +104,8 @@ public class Deque<Item> implements Iterable<Item> {
     }
   }
   
-  @SuppressWarnings("unused")
-  public Item removeFirst() {
-    
-    if (count == 0) {
-      throw new NoSuchElementException();
-    }
+  public Item removeFirst() {   
+    if (count == 0) throw new NoSuchElementException();
     else {
       if (count == 1) {
         Item item = this.first.item;
@@ -122,31 +115,26 @@ public class Deque<Item> implements Iterable<Item> {
       }
       else if (count == 2) {
         Item item = this.first.item;
-        Node oldFirst = this.first;
-        this.first = this.last;
+        this.first = this.first.next;
+        this.first.previous.next = null;
         this.first.previous = null;
         this.last = null;
-        oldFirst = null;
         count--;
         return item;
       }
       else {
         Item item = this.first.item;
-        Node oldFirst = this.first;
         this.first = this.first.next;
+        this.first.previous.next = null;
         this.first.previous = null;
-        oldFirst = null;
         this.count--;
         return item; 
       } 
     }
   }
   
-  @SuppressWarnings("unused")
   public Item removeLast() {
-    if (count == 0) {
-      throw new NoSuchElementException();
-    }
+    if (count == 0) throw new NoSuchElementException();
     else {
       if (count == 1) {
         Item item = this.first.item;
@@ -163,10 +151,9 @@ public class Deque<Item> implements Iterable<Item> {
       }
       else {
         Item item = this.last.item;
-        Node oldLast = this.last;
         this.last = this.last.previous;
+        this.last.next.previous = null;
         this.last.next = null;
-        oldLast = null; 
         this.count--;
         return item;
       } 

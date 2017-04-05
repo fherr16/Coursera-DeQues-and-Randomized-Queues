@@ -7,15 +7,21 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
   private Node first;
   private int count;
  
-  private class Node { Item item; Node next; Node previous; }
+  private class Node {
+    private Item item; 
+    private Node next; 
+    private Node previous;
+  }
   
-  public class RandomListIterator implements Iterator<Item> {
+  private class RandomListIterator implements Iterator<Item> {
     
-    Node current = first;
-    Node cloneOldFirst, cloneFirst;
-    int cloneCount = 0;
+    private Node current;
+    private Node cloneOldFirst, cloneFirst;
+    private int cloneCount;
     
     public RandomListIterator()  {
+      current = first;
+      cloneCount = 0;
       cloneFirst = new Node();
       cloneFirst.item = current.item;
       cloneFirst.next = null;
@@ -35,26 +41,34 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
       }
     }
     
-    public boolean hasNext() { return cloneFirst == null; }
+    public boolean hasNext() { 
+      return cloneFirst != null; 
+    }
     
     public Item next() {
-      if(cloneFirst == null) { throw new NoSuchElementException(); }
+      if (cloneFirst == null) throw new NoSuchElementException();
       else {
         int index = StdRandom.uniform(cloneCount);
-        Node cloneCurrent = cloneFirst;
         if (index == 0) {
-          if (cloneCount == 1) { Item item = cloneFirst.item; cloneFirst = null; cloneCount--; return item; }
-          Item item = cloneFirst.item; 
-          cloneFirst = cloneFirst.next;
-          cloneFirst.previous = null;
-          cloneCurrent.next = null;
-          cloneCurrent = null;
-          return item; 
+          if (cloneCount == 1) {
+            Item item = cloneFirst.item; 
+            cloneFirst = null;
+            cloneCount--; 
+            return item;
+          }
+          else {
+            Item item = cloneFirst.item; 
+            cloneFirst = cloneFirst.next;
+            cloneFirst.previous.next = null;
+            cloneFirst.previous = null;
+            cloneCount--;
+            return item; 
+          } 
         }
         else {
-          for (int i = 1; i < index; i++)
+          Node cloneCurrent = cloneFirst;
+          for (int i = 0; i < index; i++)
             cloneCurrent = cloneCurrent.next;
-          
           if (index == cloneCount-1) { 
             Item item = cloneCurrent.item;
             cloneCurrent.previous.next = null; 
@@ -77,14 +91,22 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
       }
     }
     
-    public void remove() { throw new UnsupportedOperationException(); }
+    public void remove() { 
+      throw new UnsupportedOperationException(); 
+    }
   }
   
-  public RandomizedQueue() { this.count = 0; }
+  public RandomizedQueue() { 
+    this.count = 0; 
+  }
   
-  public boolean isEmpty() { return this.first == null; }
+  public boolean isEmpty() { 
+    return this.first == null; 
+  }
   
-  public int size() { return this.count; }
+  public int size() { 
+    return this.count; 
+  }
   
   public void enqueue(Item item) {
     if (item == null) 
@@ -116,7 +138,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
       int index = StdRandom.uniform(this.count);
       Node current = this.first;
       if (index == 0) { 
-        if (this.count == 1) { Item item = first.item; this.first = null; current = null; this.count--; return item; }
+        if (this.count == 1) { 
+          Item item = first.item; 
+          this.first = null; 
+          current = null; 
+          this.count--; 
+          return item;
+        }
         Item item = first.item;
         this.first = first.next;
         this.first.previous = null; 
@@ -156,6 +184,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
   }
   
-  public Iterator<Item> iterator() { return new RandomListIterator(); }
- 
+  public Iterator<Item> iterator() {
+    return new RandomListIterator(); 
+  }
 }
